@@ -36,7 +36,7 @@ Python: The project is implemented using the Python programming language.
 
 YouTube Data API: Utilizes the official YouTube Data API to interact with YouTube's platform and retrieve data.
 
-Streamlit: The user interface and visualization are created using the Streamlit framework, providing a seamless and interactive experience.
+'Streamlit:' The user interface and visualization are created using the Streamlit framework, providing a seamless and interactive experience.
 
 MongoDB: The collected data can be stored in a MongoDB database for efficient data management and querying.
 
