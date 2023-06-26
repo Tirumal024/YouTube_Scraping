@@ -12,7 +12,7 @@ Features
 [Additional_Information](#Additional Information)
 
 License
-https://github.com/Tirumal024/YouTube_Scrapping/blob/main/README.md#technologies-used
+
 Conclusion
 
 # Introduction
