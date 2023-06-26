@@ -48,8 +48,6 @@ The YouTube Data Scraper offers a range of features to help you extract and anal
 
 `Psycopg2:` A PostgreSQL adapter for Python that allows seamless integration between Python and PostgreSQL. It enables the YouTube Data Scraper to connect to and interact with the PostgreSQL database.
 
-`Matplotlib:` A popular data visualization library in Python used for creating charts, graphs, and visual representations of the data retrieved from YouTube. Matplotlib helps in analyzing and presenting the data in a meaningful way.
-
 `Pandas:` A powerful data manipulation and analysis library in Python. Pandas is used in the YouTube Data Scraper to handle and process data obtained from YouTube, providing functionalities such as data filtering, transformation, and aggregation.
 
 pip install -r requirements.txt: To install the required dependencies.
