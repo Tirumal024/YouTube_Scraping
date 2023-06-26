@@ -34,7 +34,7 @@ Generate reports: Generate reports and visualizations based on the collected dat
 Data storage: Store the collected YouTube data in a database for easy retrieval and future reference.
 
 # Technologies Used
-Python: The project is implemented using the Python programming language.
+`Python:` The project is implemented using the Python programming language.
 
 YouTube Data API: Utilizes the official YouTube Data API to interact with YouTube's platform and retrieve data.
 
