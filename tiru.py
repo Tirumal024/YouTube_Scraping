@@ -7,7 +7,7 @@ from bson import ObjectId
 import psycopg2
 from datetime import datetime
 from googleapiclient.errors import HttpError
-from PIL import Image
+
 
 cnx = psycopg2.connect(host="localhost",
                         user="postgres",
@@ -22,21 +22,12 @@ atlas_password = 'tiru'
 atlas_cluster = 'Cluster0'
 client = MongoClient(
     f"mongodb+srv://{atlas_username}:{atlas_password}@{atlas_cluster}.erthqay.mongodb.net/?retryWrites=true&w=majority")
-# mongodb+srv://shivaraghav200701:<password>@cluster0.px1mkyu.mongodb.net/?retryWrites=true&w=majority
-# mongodb+srv://ashispalailearning2022:<password>@cluster0.rjsvnlc.mongodb.net/
+
 db = client['youtube_data']
 collection = db['channel_data']
 Api_key='AIzaSyBsKFnsDGfcaHGCHo77OuWsU5uCk2FdFvY'
 # Set Streamlit app title
-page_bg_img ="""
-<style>
-[data-testid="stAppViewCOntainer"] {
-background-image: url ("https://images.pexels.com/photos/10752186/pexels-photo-10752186.jpeg");
-background-size: cover;
-}s
-</style>
-"""
-st.markdown("", unsafe_allow_html=True)
+
 st.title("YouTube Data Harvesting and Warehousing")
 
 # Display input field for YouTube channel ID
@@ -180,12 +171,7 @@ def get_video_comments(youtube, videoid):
     return comments
 
 
-# def date_formatter(date):
-#    x = date.replace('T',' ')
-#    x.translate({ord('Z'): None})
-#    date_format = '%Y-%m-%d %H:%M:%S'
-#    date_obj = datetime.strptime(x, date_format)
-#    return date_obj
+
 
 def durationtoint(time_str):
     hours, minutes, seconds = time_str.split('h ')[0], time_str.split('h ')[1].split('m ')[0], \
@@ -448,8 +434,7 @@ with g:
         st.success("Data stored successfully in MongoDB Atlas and migrated to SQL data warehouse!")
 
 with z:
-    #queries section
-    # if st.button("Select to run queries on the generated SQL data warehouse"):
+    
 
     def question1():
             cursor.execute("""SELECT playlist.channel_name, video.video_name FROM playlist JOIN video ON playlist.playlist_id = video.playlist_id""")
