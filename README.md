@@ -1,7 +1,6 @@
 # YouTube_Scrapping
 Content
 Introduction
-
 Features
 
 [Technologies_Used](#Technologies Used)
@@ -16,10 +15,10 @@ License
 
 Conclusion
 
-Introduction
+# Introduction
 This project is a YouTube API scrapper that allows users to retrieve and analyze data from YouTube channels. It utilizes the YouTube Data API to fetch information such as channel statistics, video details, comments, and more. The scrapper provides various functionalities to extract and process YouTube data for further analysis and insights.
 
-Features
+# Features
 The YouTube Data Scraper offers a range of features to help you extract and analyze data from YouTube. Some of the key features include:
 
 Retrieve channel statistics: Get detailed information about YouTube channels, including subscriber count, view count, video count, and other relevant metrics.
@@ -32,7 +31,7 @@ Generate reports: Generate reports and visualizations based on the collected dat
 
 Data storage: Store the collected YouTube data in a database for easy retrieval and future reference.
 
-Technologies Used
+# Technologies Used
 Python: The project is implemented using the Python programming language.
 
 YouTube Data API: Utilizes the official YouTube Data API to interact with YouTube's platform and retrieve data.
@@ -51,9 +50,9 @@ Matplotlib: A popular data visualization library in Python used for creating cha
 
 Pandas: A powerful data manipulation and analysis library in Python. Pandas is used in the YouTube Data Scraper to handle and process data obtained from YouTube, providing functionalities such as data filtering, transformation, and aggregation.
 
-pip install -r requirements.txt: To install the rquired dependencies.
+pip install -r requirements.txt: To install the required dependencies.
 
-Process Flow
+# Process Flow
 Obtain YouTube API credentials:
 Visit the Google Cloud Console.
 
@@ -63,14 +62,14 @@ Enable the YouTube Data API v3 for your project.
 
 Create API credentials for youtube API v3.
 
-ETL Process
+# ETL Process
 Extracting Data from youtube API.
 
-Transforming data into required format.
+Transforming data into the required format.
 
 Loading Data into SQL
 
-Application Flow
+# Application Flow
 Select Data Retrieval and Processing Page from dropdown menu at the sidebar.
 
 Input the Channel Id and click on Get Channel Statistics in order to retrive data from Youtube API.
@@ -81,7 +80,7 @@ Select a channel name from the dropdown Channel Details and click on Push to SQL
 
 Once imported, you can select the Analysis and Reports Page from the drop down to get a detailed analysis of the collected data.
 
-Additional Information
+# Additional Information
 Please note that when using this application, it is essential to comply with the YouTube Data API's terms of service and adhere to its usage limits to ensure uninterrupted access to the API. If you encounter any issues or have questions regarding the YouTube Data Scraper, please refer to the project's detailed documentation available in the GitHub repository.
 
 License
