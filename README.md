@@ -12,7 +12,7 @@ Features
 [Additional_Information](#Additional Information)
 
 License
-
+https://github.com/Tirumal024/YouTube_Scrapping/blob/main/README.md#technologies-used
 Conclusion
 
 # Introduction
@@ -83,8 +83,8 @@ Once imported, you can select the Analysis and Reports Page from the drop down t
 # Additional Information
 Please note that when using this application, it is essential to comply with the YouTube Data API's terms of service and adhere to its usage limits to ensure uninterrupted access to the API. If you encounter any issues or have questions regarding the YouTube Data Scraper, please refer to the project's detailed documentation available in the GitHub repository.
 
-License
+# License
 The YouTube Data Scraper is released under the MIT License. Feel free to modify and use the code according to the terms of the license.
 
-Conclusion
+# Conclusion
 This YouTube API scrapper project aims to provide a powerful tool for retrieving, analyzing, and visualizing YouTube data, enabling users to gain valuable insights into channel performance, video engagement, and audience feedback.
