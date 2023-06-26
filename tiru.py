@@ -7,6 +7,7 @@ from bson import ObjectId
 import psycopg2
 from datetime import datetime
 from googleapiclient.errors import HttpError
+from PIL import Image
 
 cnx = psycopg2.connect(host="localhost",
                         user="postgres",
@@ -27,14 +28,25 @@ db = client['youtube_data']
 collection = db['channel_data']
 Api_key='AIzaSyBsKFnsDGfcaHGCHo77OuWsU5uCk2FdFvY'
 # Set Streamlit app title
+page_bg_img ="""
+<style>
+[data-testid="stAppViewCOntainer"] {
+background-image: url ("https://images.pexels.com/photos/10752186/pexels-photo-10752186.jpeg");
+background-size: cover;
+}s
+</style>
+"""
+st.markdown("", unsafe_allow_html=True)
 st.title("YouTube Data Harvesting and Warehousing")
 
 # Display input field for YouTube channel ID
 channel_id = st.text_input("Enter YouTube Channel ID")
-a,b,c,d,e,f,g,h = st.tabs(
-    [" Retrieve Channel Data ", " Store Data In MongoDB Atlas ",
-     " Retrieve Data From MongoDB Atlas ", " Create tables In SQL","Migrate channel information from MongoDB Atlas to SQL",
-     " Migrate video information from MongoDB Atlas to SQL ", "Migrate comment information from MongoDB Atlas to SQL","channel analysis" ])
+a,b = st.tabs(
+    [" Retrieve Channel Data ", " Store Data In MongoDB Atlas "])
+c,d = st.tabs([" Retrieve Data From MongoDB Atlas ", " Create tables In SQL"])
+e,f = st.tabs(["Migrate channel information from MongoDB Atlas to SQL",
+     " Migrate video information from MongoDB Atlas to SQL "])
+g,z = st.tabs(["Migrate comment information from MongoDB Atlas to SQL","channel analysis"])
 
 def parse_duration(duration):
     duration_str = ""
@@ -435,7 +447,7 @@ with g:
         cnx.commit()
         st.success("Data stored successfully in MongoDB Atlas and migrated to SQL data warehouse!")
 
-with h:
+with z:
     #queries section
     # if st.button("Select to run queries on the generated SQL data warehouse"):
 
@@ -553,6 +565,10 @@ with h:
             st.dataframe(question9())
     elif select_question == '10. Which videos have the highest number of comments, and what are their corresponding channel names?':
             st.dataframe(question10())
+
+
+
+
 
 
 
