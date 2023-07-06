@@ -8,12 +8,11 @@ import psycopg2
 from datetime import datetime
 from googleapiclient.errors import HttpError
 
-
 cnx = psycopg2.connect(host="localhost",
-                        user="postgres",
-                        password="TiruSrini24",
-                        port=5432,
-                        database="postgres")
+                       user="postgres",
+                       password="TiruSrini24",
+                       port=5432,
+                       database="postgres")
 cursor = cnx.cursor()
 
 # Connect to MongoDB Atlas
@@ -25,19 +24,20 @@ client = MongoClient(
 
 db = client['youtube_data']
 collection = db['channel_data']
-Api_key='AIzaSyBsKFnsDGfcaHGCHo77OuWsU5uCk2FdFvY'
+Api_key = 'AIzaSyBsKFnsDGfcaHGCHo77OuWsU5uCk2FdFvY'
 # Set Streamlit app title
 
 st.title("YouTube Data Harvesting and Warehousing")
 
 # Display input field for YouTube channel ID
 channel_id = st.text_input("Enter YouTube Channel ID")
-a,b = st.tabs(
+a, b = st.tabs(
     [" Retrieve Channel Data ", " Store Data In MongoDB Atlas "])
-c,d = st.tabs([" Retrieve Data From MongoDB Atlas ", " Create tables In SQL"])
-e,f = st.tabs(["Migrate channel information from MongoDB Atlas to SQL",
-     " Migrate video information from MongoDB Atlas to SQL "])
-g,z = st.tabs(["Migrate comment information from MongoDB Atlas to SQL","channel analysis"])
+c, d = st.tabs([" Retrieve Data From MongoDB Atlas ", " Create tables In SQL"])
+e, f = st.tabs(["Migrate channel information from MongoDB Atlas to SQL",
+                " Migrate video information from MongoDB Atlas to SQL "])
+g, z = st.tabs(["Migrate comment information from MongoDB Atlas to SQL", "channel analysis"])
+
 
 def parse_duration(duration):
     duration_str = ""
@@ -70,6 +70,7 @@ def parse_duration(duration):
         duration_str += f"{seconds}s"
 
     return duration_str.strip()
+
 
 # Retrieve all video_ids
 def get_video_ids(youtube, playlist_id):
@@ -104,6 +105,8 @@ def get_video_ids(youtube, playlist_id):
             next_page_token = response.get('nextPageToken')
 
     return video_ids
+
+
 # Retrieve videos for a given YouTube channel ID
 def get_video_details(youtube, video_ids):
     videos = []
@@ -128,40 +131,40 @@ def get_video_comments(youtube, videoid):
             part="snippet",
             videoId=videoid,
             maxResults=100
-            )
+        )
 
         while request:
             response = request.execute()
 
             for comment in response['items']:
                 data = {
-                        'Video_Id': videoid,
-                        'Comment_Id': comment['snippet']['topLevelComment']['id'],
-                        'Comment_Text': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
-                        'Comment_Author': comment['snippet']['topLevelComment']['snippet']['authorDisplayName'],
-                        'Comment_PublishedAt': comment['snippet']['topLevelComment']['snippet']['publishedAt']
-                    }
+                    'Video_Id': videoid,
+                    'Comment_Id': comment['snippet']['topLevelComment']['id'],
+                    'Comment_Text': comment['snippet']['topLevelComment']['snippet']['textOriginal'],
+                    'Comment_Author': comment['snippet']['topLevelComment']['snippet']['authorDisplayName'],
+                    'Comment_PublishedAt': comment['snippet']['topLevelComment']['snippet']['publishedAt']
+                }
                 comments.append(data)
 
             if 'nextPageToken' in response:
                 request = youtube.commentThreads().list(
-                        part="snippet",
-                        textFormat="plainText",
-                        videoId=video_id,
-                        maxResults=100,
-                        pageToken=response.get('nextPageToken')
-                    )
+                    part="snippet",
+                    textFormat="plainText",
+                    videoId=video_id,
+                    maxResults=100,
+                    pageToken=response.get('nextPageToken')
+                )
             else:
                 break
     except HttpError as e:
         if e.resp.status == 403 and 'disabled comments' in str(e):
             data = {
-                    'Video_Id': video_id,
-                    'Comment_Id': f'comments_disabled_{video_id}',
-                    'Comment_Text': 'comments_disabled',
-                    'Comment_Author': 'comments_disabled',
-                    'Comment_PublishedAt': 'comments_disabled'
-                }
+                'Video_Id': video_id,
+                'Comment_Id': f'comments_disabled_{video_id}',
+                'Comment_Text': 'comments_disabled',
+                'Comment_Author': 'comments_disabled',
+                'Comment_PublishedAt': 'comments_disabled'
+            }
             comments.append(data)
             print(f"Comments are disabled for video: {video_id}")
         else:
@@ -171,16 +174,12 @@ def get_video_comments(youtube, videoid):
     return comments
 
 
-
-
 def durationtoint(time_str):
     hours, minutes, seconds = time_str.split('h ')[0], time_str.split('h ')[1].split('m ')[0], \
-    time_str.split('h ')[1].split('m ')[1][:-1]
+        time_str.split('h ')[1].split('m ')[1][:-1]
 
     total_seconds = int(hours) * 3600 + int(minutes) * 60 + int(seconds)
     return (total_seconds)
-
-
 
     # Initialize YouTube Data API client
 
@@ -217,10 +216,6 @@ if 'items' in response:
     video_ids = get_video_ids(youtube, data['Channel_Name']['Playlist_Id'])
     videos = get_video_details(youtube, video_ids)
 
-
-
-
-
     for video in videos:
         video_id = video['id']
         video_data = {
@@ -237,7 +232,7 @@ if 'items' in response:
             'Duration': parse_duration(video['contentDetails'].get('duration', '')),
             'Thumbnail': video['snippet'].get('thumbnails', {}).get('default', {}).get('url', ''),
             'Caption_Status': video['snippet'].get('localized', {}).get('localized', 'Not Available'),
-            'Comments':get_video_comments(youtube,video_id)
+            'Comments': get_video_comments(youtube, video_id)
         }
         data[video_id] = video_data
 
@@ -434,123 +429,128 @@ with g:
         st.success("Data stored successfully in MongoDB Atlas and migrated to SQL data warehouse!")
 
 with z:
-    
-
     def question1():
-            cursor.execute("""SELECT playlist.channel_name, video.video_name FROM playlist JOIN video ON playlist.playlist_id = video.playlist_id""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'video_name']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, video.video_name FROM playlist JOIN video ON playlist.playlist_id = video.playlist_id""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'video_name']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question2():
-            cursor.execute("""SELECT playlist.channel_name, COUNT(video.video_id) AS video_count FROM playlist JOIN Video ON playlist.playlist_id = video.playlist_id GROUP BY playlist.channel_name ORDER BY video_count DESC;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'video_count']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, COUNT(video.video_id) AS video_count FROM playlist JOIN Video ON playlist.playlist_id = video.playlist_id GROUP BY playlist.channel_name ORDER BY video_count DESC;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'video_count']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question3():
-            cursor.execute("""SELECT video.video_name, playlist.channel_name, video.view_count FROM video JOIN playlist ON video.playlist_id = playlist.playlist_id ORDER BY video.view_count DESC LIMIT 10;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'View count']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, video.video_name,  video.view_count FROM video JOIN playlist ON video.playlist_id = playlist.playlist_id ORDER BY video.view_count DESC LIMIT 10;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'View count']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question4():
-            cursor.execute("""SELECT Video_name, comment_count from video ORDER BY comment_count DESC;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['video Name', 'comment count']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute("""SELECT Video_name, comment_count from video ORDER BY comment_count DESC;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['video Name', 'comment count']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question5():
-            cursor.execute("""SELECT Video.video_name, playlist.channel_name, Video.like_count FROM Video JOIN playlist ON video.playlist_id = playlist.playlist_id ORDER BY video.like_count DESC;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'like_count']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, Video.video_name,  Video.like_count FROM Video JOIN playlist ON video.playlist_id = playlist.playlist_id ORDER BY video.like_count DESC;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'like_count']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question6():
-            cursor.execute("""SELECT video_name, like_count, dislike_count FROM video ORDER BY like_count DESC, dislike_count ASC;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['video_name', 'like_count', 'dislike_count']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT video_name, like_count, dislike_count FROM video ORDER BY like_count DESC, dislike_count ASC;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['video_name', 'like_count', 'dislike_count']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question7():
-            cursor.execute("""SELECT channel_name, channel_views FROM channel ORDER BY channel_views DESC;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'total_number_of_views']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute("""SELECT channel_name, channel_views FROM channel ORDER BY channel_views DESC;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'total_number_of_views']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question8():
-            cursor.execute("""SELECT playlist.channel_name, Video.video_name, Video.published_date FROM playlist JOIN video ON playlist.playlist_id = Video.playlist_id WHERE EXTRACT(YEAR FROM video.published_date) = 2022;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'Year_2022']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, Video.video_name, Video.published_date FROM playlist JOIN video ON playlist.playlist_id = Video.playlist_id WHERE EXTRACT(YEAR FROM video.published_date) = 2022;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'Year_2022']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
     def question9():
-            cursor.execute("""SELECT playlist.channel_name, AVG(Video.duration) AS average_duration FROM playlist JOIN video ON playlist.playlist_id = Video.playlist_id GROUP BY playlist.channel_name;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'average_duration_of_videos']).reset_index(drop=True)
-            df['average_duration_of_videos'] = df['average_duration_of_videos'].astype(float)
-            df['average_duration_of_videos'] = df['average_duration_of_videos'].round(2)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, AVG(Video.duration) AS average_duration FROM playlist JOIN video ON playlist.playlist_id = Video.playlist_id GROUP BY playlist.channel_name;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'average_duration_of_videos']).reset_index(drop=True)
+        df['average_duration_of_videos'] = df['average_duration_of_videos'].astype(float)
+        df['average_duration_of_videos'] = df['average_duration_of_videos'].round(2)
+        df.index += 1
+        return df
 
 
     def question10():
-            cursor.execute("""SELECT playlist.channel_name, Video.video_name, Video.comment_count FROM playlist JOIN Video ON playlist.playlist_id = Video.playlist_id  ORDER BY comment_count DESC;""")
-            result = cursor.fetchall()
-            df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'number_of_comments']).reset_index(drop=True)
-            df.index += 1
-            return df
+        cursor.execute(
+            """SELECT playlist.channel_name, Video.video_name, Video.comment_count FROM playlist JOIN Video ON playlist.playlist_id = Video.playlist_id  ORDER BY comment_count DESC;""")
+        result = cursor.fetchall()
+        df = pd.DataFrame(result, columns=['channel_name', 'video_name', 'number_of_comments']).reset_index(drop=True)
+        df.index += 1
+        return df
 
 
-    query_options = ['Tap view','1. What are the names of all the videos and their corresponding channels?',
-                         '2. Which channels have the most number of videos, and how many videos do they have?',
-                         '3. What are the top 10 most viewed videos and their respective channels?',
-                         '4. How many comments were made on each video, and what are their corresponding video names?',
-                         '5. Which videos have the highest number of likes, and what are their corresponding channel names?',
-                         '6. What is the total number of likes and dislikes for each video, and what are their corresponding video names?',
-                         '7. What is the total number of views for each channel, and what are their corresponding channel names?',
-                         '8. What are the names of all the channels that have published videos in the year 2022?',
-                         '9. What is the average duration of all videos in each channel, and what are their corresponding channel names?',
-                         '10. Which videos have the highest number of comments, and what are their corresponding channel names?']
+    query_options = ['Tap view', '1. What are the names of all the videos and their corresponding channels?',
+                     '2. Which channels have the most number of videos, and how many videos do they have?',
+                     '3. What are the top 10 most viewed videos and their respective channels?',
+                     '4. How many comments were made on each video, and what are their corresponding video names?',
+                     '5. Which videos have the highest number of likes, and what are their corresponding channel names?',
+                     '6. What is the total number of likes and dislikes for each video, and what are their corresponding video names?',
+                     '7. What is the total number of views for each channel, and what are their corresponding channel names?',
+                     '8. What are the names of all the channels that have published videos in the year 2022?',
+                     '9. What is the average duration of all videos in each channel, and what are their corresponding channel names?',
+                     '10. Which videos have the highest number of comments, and what are their corresponding channel names?']
 
-    select_question = st.selectbox("select the squestion",query_options)
+    select_question = st.selectbox("select the squestion", query_options)
     if select_question == '1. What are the names of all the videos and their corresponding channels?':
-            st.dataframe(question1())
+        st.dataframe(question1())
     elif select_question == '2. Which channels have the most number of videos, and how many videos do they have?':
-            st.dataframe(question2())
+        st.dataframe(question2())
     elif select_question == '3. What are the top 10 most viewed videos and their respective channels?':
-            st.dataframe(question3())
+        st.dataframe(question3())
     elif select_question == '4. How many comments were made on each video, and what are their corresponding video names?':
-            st.dataframe(question4())
+        st.dataframe(question4())
     elif select_question == '5. Which videos have the highest number of likes, and what are their corresponding channel names?':
-            st.dataframe(question5())
+        st.dataframe(question5())
     elif select_question == '6. What is the total number of likes and dislikes for each video, and what are their corresponding video names?':
-            st.dataframe(question6())
+        st.dataframe(question6())
     elif select_question == '7. What is the total number of views for each channel, and what are their corresponding channel names?':
-            st.dataframe(question7())
+        st.dataframe(question7())
     elif select_question == '8. What are the names of all the channels that have published videos in the year 2022?':
-            st.dataframe(question8())
+        st.dataframe(question8())
     elif select_question == '9. What is the average duration of all videos in each channel, and what are their corresponding channel names?':
-            st.dataframe(question9())
+        st.dataframe(question9())
     elif select_question == '10. Which videos have the highest number of comments, and what are their corresponding channel names?':
-            st.dataframe(question10())
-
+        st.dataframe(question10())
 
 
 
